@@ -2,9 +2,10 @@ import express, { json } from 'express';
 import 'express-async-errors';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
+import { userRouter } from './routes/user.routes';
 
 const app = express();
-
+app.use(json());
 app.use(
   rateLimit({
     windowMs: 5 * 60 * 1000,
@@ -16,9 +17,6 @@ app.use(
     origin: 'http://localhost:3000',
   }),
 );
-app.use(json);
-// app.get('/api', (req, res) => {
-//   res.send('ok');
-// });
+app.use('/api', userRouter);
 
-app.listen(3001, 'localhost', () => console.log('server starting on http://localhost:3001/api'));
+app.listen(5000, 'localhost', () => console.log('server starting on http://localhost:5000'));
