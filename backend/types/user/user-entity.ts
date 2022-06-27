@@ -8,5 +8,5 @@ export interface UserEntity {
   email: string;
   password: string;
   resetPassword?: string;
-  resetPasswordExpires?: Date;
+  resetPasswordExpires?: string;
 }

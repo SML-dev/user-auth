@@ -3,9 +3,9 @@ import {
   loginUser,
   forgotPassword,
   registerUser,
-  resetPassword,
   getPrivateData,
   logout,
+  resetPassword,
 } from '../controllers/user.controller';
 import { authorization } from '../utils/authToken';
 
@@ -15,5 +15,5 @@ userRouter.post('/register', registerUser);
 userRouter.post('/login', loginUser);
 userRouter.get('/logout', authorization, logout);
 userRouter.post('/forgot-password', forgotPassword);
-userRouter.post('/reset-password/:token', resetPassword);
+userRouter.put('/reset-password/:token', resetPassword);
 userRouter.get('/private', authorization, getPrivateData);

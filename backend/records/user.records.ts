@@ -12,7 +12,7 @@ export class UserRecord implements UserEntity {
   email: string;
   password: string;
   resetPassword?: string;
-  resetPasswordExpires?: Date;
+  resetPasswordExpires?: string;
 
   constructor(obj: NewUserEntity) {
     if (!obj.name || obj.name.length > 20 || obj.name.length < 4) {
@@ -31,6 +31,8 @@ export class UserRecord implements UserEntity {
     this.name = obj.name;
     this.email = obj.email;
     this.password = obj.password;
+    this.resetPassword = obj.resetPassword ?? null;
+    this.resetPasswordExpires = obj.resetPasswordExpires ?? null;
   }
 
   static async getOne(email: string): Promise<UserRecord> {
@@ -40,23 +42,46 @@ export class UserRecord implements UserEntity {
     return results.length === 0 ? null : new UserRecord(results[0]);
   }
 
-  // static async getOneById(id: string): Promise<UserRecord> {
-  //   const [results] = (await pool.execute('SELECT * FROM users WHERE `id`= :id', {
-  //     id,
-  //   })) as UserRecordResults;
-  //   return results.length === 0 ? null : new UserRecord(results[0]);
-  // }
+  static async getOneByResetPassword(
+    resetPassword: string,
+    resetPasswordExpires: string,
+  ): Promise<UserRecord> {
+    const [results] = (await pool.execute(
+      'SELECT * FROM users WHERE `resetPassword`= :resetPassword AND `resetPasswordExpires` > :resetPasswordExpires',
+      {
+        resetPassword,
+        resetPasswordExpires,
+      },
+    )) as UserRecordResults;
+    return results.length === 0 ? null : new UserRecord(results[0]);
+  }
 
   async insert(): Promise<string> {
     await pool.execute(
-      'INSERT INTO `users`(`id`,`name`,`email`,`password`) VALUES(:id,:name,:email,:password) ',
+      'INSERT INTO `users`(`id`,`name`,`email`,`password`,`resetPassword`,`resetPasswordExpires`) VALUES(:id,:name,:email,:password,:resetPassword, :resetPasswordExpires) ',
       {
         id: this.id,
         name: this.name,
         email: this.email,
         password: this.password,
+        resetPassword: this.resetPassword,
+        resetPasswordExpires: this.resetPasswordExpires,
       },
     );
     return this.id;
+  }
+
+  async update(): Promise<void> {
+    await pool.execute(
+      'UPDATE `users` SET `name` = :name, `email` = :email, `password` = :password, `resetPassword` = :resetPassword, `resetPasswordExpires` = :resetPasswordExpires  WHERE `id` = :id',
+      {
+        id: this.id,
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        resetPassword: this.resetPassword,
+        resetPasswordExpires: this.resetPasswordExpires,
+      },
+    );
   }
 }
