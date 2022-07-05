@@ -29,7 +29,7 @@ export class UserRecord implements UserEntity {
 
     this.id = obj.id ?? uuid();
     this.name = obj.name;
-    this.email = obj.email;
+    this.email = obj.email.toLowerCase();
     this.password = obj.password;
     this.resetPassword = obj.resetPassword ?? null;
     this.resetPasswordExpires = obj.resetPasswordExpires ?? null;

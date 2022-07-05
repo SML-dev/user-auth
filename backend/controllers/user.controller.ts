@@ -12,6 +12,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   const { email, password } = req.body;
   const userExists = await UserRecord.getOne(email);
   if (userExists) {
+    res.status(409).json({ msg: 'user already exists' });
     throw new ValidationError('User already exists');
   }
   if (!password || password.length > 50 || password.length < 6) {
@@ -21,14 +22,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   try {
     const user = new UserRecord({ ...req.body, password: await bcryptPassword(password) });
     await user.insert();
-    const token = authToken(user.id);
-    res
-      .cookie('access_token', token, {
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
-      })
-      .status(201)
-      .json({ msg: 'Registration successful' });
+    res.status(201).json({ msg: 'Registration successful' });
   } catch (err) {
     console.log(err.message);
   }
@@ -38,6 +32,9 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
   try {
     const user = await UserRecord.getOne(email);
+    if (!user) {
+      res.status(404).json({ msg: 'Email not found' });
+    }
     const token = authToken(user.id);
     if (user && (await checkPassword(password, user.password))) {
       res
@@ -45,16 +42,19 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,
         })
-        .json({ token });
+        .json({ token, msg: `Hello ${user.name}` });
     } else {
-      throw new ValidationError('password or email is incorrect');
+      throw new ValidationError('Error occurred');
     }
   } catch (err) {
-    res.status(404).json({ msg: `${err.message}` });
+    console.log(err.message);
+    res.status(404).json({ msg: 'Password is incorrect' });
   }
 };
 
 export const getPrivateData = async (req: Request, res: Response): Promise<void> => {
+  // @ts-ignore
+  console.log(req.userId);
   res.send('You have access to private data');
 };
 
@@ -64,7 +64,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
   const user = await UserRecord.getOne(email);
 
   if (!user) {
-    throw new ValidationError('Email is incorrect');
+    res.status(404).json({ msg: 'Sorry We couldnt find Your email' });
   }
 
   const resetToken = await resetPasswordToken(user);
@@ -75,7 +75,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
   `;
   try {
     await sendEmail({
-      to: process.env.EMAIL_ADDRESS_TEST,
+      to: user.email,
       subject: 'password reset',
       text: msg,
     });
@@ -84,17 +84,17 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
     user.resetPasswordExpires = '';
     throw new ValidationError('Error occurred while sending mail');
   }
-  res.json({ msg: 'Sending email reset password' });
+  res.json({ msg: 'Sending email reset password', resetToken });
 };
 export const resetPassword = async (req: Request, res: Response): Promise<void> => {
   const resetPassword = crypto.createHash('sha512').update(req.params.token).digest('hex');
   try {
     const user = await UserRecord.getOneByResetPassword(resetPassword, moment().format());
     if (!user) {
+      res.status(404).json({ msg: 'Invalid Reset Token' });
       throw new ValidationError('invalid Reset Token');
     }
     user.password = await bcryptPassword(req.body.password);
-    await user.update();
     user.resetPassword = '';
     user.resetPasswordExpires = '';
     await user.update();
