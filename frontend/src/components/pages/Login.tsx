@@ -1,11 +1,11 @@
-import react, { ChangeEvent, FormEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
-import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe'
+import React, { ChangeEvent, FormEvent, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 export const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -18,8 +18,7 @@ export const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       })
-      const info: RespFromBe = await res.json()
-      toast.success(info.msg)
+      navigate('/user')
     } catch (err) {
       console.log(err)
     }
@@ -33,7 +32,6 @@ export const Login = () => {
   }
   return (
     <div className='container'>
-      <ToastContainer />
       <h2>login</h2>
       <form onSubmit={handleSubmit}>
         <div>

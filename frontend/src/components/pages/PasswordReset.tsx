@@ -1,6 +1,7 @@
-import react, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 import { Link, useParams } from 'react-router-dom'
+import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe'
 
 export const ResetPassword = () => {
   const [password, setPassword] = useState('')
@@ -16,9 +17,8 @@ export const ResetPassword = () => {
         },
         body: JSON.stringify({ password }),
       })
-      const data = await res.json()
-      console.log(data.msg)
-      toast(data.msg)
+      const info: RespFromBe = await res.json()
+      toast.info(info.msg)
     } catch (err) {
       console.log(err)
     }

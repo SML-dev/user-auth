@@ -1,12 +1,10 @@
-import react, { ChangeEvent, FormEvent, useState } from 'react'
-import 'react-toastify/dist/ReactToastify.min.css'
-
+import react, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.min.css'
 import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe'
 
 export const Register = () => {
-  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,8 +21,7 @@ export const Register = () => {
         body: JSON.stringify({ email, password, name }),
       })
       const info: RespFromBe = await res.json()
-      toast.info(info.msg)
-      navigate('/login')
+      toast(info.msg)
     } catch (err) {
       console.log(err)
     }
@@ -42,7 +39,6 @@ export const Register = () => {
   return (
     <div className='container'>
       <ToastContainer />
-
       <h2>register</h2>
       <form onSubmit={handleSubmit}>
         <div>

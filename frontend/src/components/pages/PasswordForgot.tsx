@@ -1,5 +1,6 @@
-import react, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
+import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe'
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('')
@@ -15,8 +16,8 @@ export const ForgotPassword = () => {
         },
         body: JSON.stringify({ email }),
       })
-      const data = await res.json()
-      toast.success(data.msg)
+      const info: RespFromBe = await res.json()
+      toast.success(info.msg)
     } catch (err) {
       console.log(err)
     }

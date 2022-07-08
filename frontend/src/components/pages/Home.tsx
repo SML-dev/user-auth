@@ -1,5 +1,11 @@
-import react from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const Home = () => {
-  return <div>Home</div>
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    navigate('/login')
+  }, [])
+  return <></>
 }

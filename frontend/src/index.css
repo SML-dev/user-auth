@@ -20,7 +20,7 @@ body {
   padding: 1rem 3rem;
   padding-bottom: 2rem;
   border-radius: 0.5rem;
-  border-top: rgb(80, 98, 255) 0.5rem solid;
+  border-top: #0288d1 0.5rem solid;
 }
 
 h2 {
@@ -47,7 +47,7 @@ input {
 }
 
 button {
-  background-color: rgb(80, 98, 255);
+  background-color: #0288d1;
   color: white;
   border: none;
   padding: 0.5rem;
@@ -59,13 +59,13 @@ button {
 
 span a {
   text-decoration: none;
-  color: rgb(80, 98, 255);
+  color: #0288d1;
 }
 
 .private {
   height: 100vh;
   width: 100vw;
-  background-color: rgb(80, 98, 255);
+  background-color: #0288d1;
   color: white;
   display: flex;
   justify-content: center;
