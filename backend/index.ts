@@ -16,7 +16,6 @@ app.use(
   }),
 );
 app.use(cookieParser());
-
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -24,7 +23,5 @@ app.use(
   }),
 );
 app.use('/api', userRouter);
-
 app.use(handleError);
-
 app.listen(5000, 'localhost', () => console.log('server starting on http://localhost:5000'));

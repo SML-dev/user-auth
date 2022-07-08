@@ -18,7 +18,8 @@ export const authorization = (req: Request, res: Response, next: NextFunction) =
     if (err) {
       return res.status(403).json('Invalid token');
     }
-
+    // @ts-ignore
+    req.userId = payload.id;
     return next();
   });
 };

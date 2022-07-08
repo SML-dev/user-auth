@@ -1,20 +1,21 @@
 import { Request, Response } from 'express';
+import * as crypto from 'crypto';
+import moment from 'moment';
 import { UserRecord } from '../records/user.records';
 import { ValidationError } from '../utils/error';
 import { authToken } from '../utils/authToken';
 import { bcryptPassword, checkPassword } from '../utils/hashGen';
 import { sendEmail } from '../utils/sendEmail';
 import { resetPasswordToken } from '../utils/reseterPassword';
-import * as crypto from 'crypto';
-import moment from 'moment';
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
   const userExists = await UserRecord.getOne(email);
+
   if (userExists) {
     res.status(409).json({ msg: 'user already exists' });
-    throw new ValidationError('User already exists');
   }
+
   if (!password || password.length > 50 || password.length < 6) {
     throw new ValidationError('Password cannot be empty and must be between 6 and 50 characters');
   }
@@ -33,7 +34,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await UserRecord.getOne(email);
     if (!user) {
-      res.status(404).json({ msg: 'Email not found' });
+      // return res.status(404).json({ msg: 'Email not found' });
+      throw new ValidationError('email not found');
     }
     const token = authToken(user.id);
     if (user && (await checkPassword(password, user.password))) {
@@ -54,8 +56,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 export const getPrivateData = async (req: Request, res: Response): Promise<void> => {
   // @ts-ignore
-  console.log(req.userId);
-  res.send('You have access to private data');
+  const user = await UserRecord.getOneById(req.userId);
+  res.json({ ...user });
 };
 
 export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
@@ -92,7 +94,6 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     const user = await UserRecord.getOneByResetPassword(resetPassword, moment().format());
     if (!user) {
       res.status(404).json({ msg: 'Invalid Reset Token' });
-      throw new ValidationError('invalid Reset Token');
     }
     user.password = await bcryptPassword(req.body.password);
     user.resetPassword = '';

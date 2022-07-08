@@ -42,6 +42,13 @@ export class UserRecord implements UserEntity {
     return results.length === 0 ? null : new UserRecord(results[0]);
   }
 
+  static async getOneById(id: string): Promise<UserRecord> {
+    const [results] = (await pool.execute('SELECT * FROM users WHERE `id`= :id', {
+      id,
+    })) as UserRecordResults;
+    return results.length === 0 ? null : new UserRecord(results[0]);
+  }
+
   static async getOneByResetPassword(
     resetPassword: string,
     resetPasswordExpires: string,
