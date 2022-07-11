@@ -11,7 +11,6 @@ export const Welcome = () => {
           credentials: 'include',
         })
         const info: UserEntity = await res.json()
-        console.log(info)
         setUser(info.name)
       } catch (err) {
         console.log(err)

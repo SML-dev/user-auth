@@ -18,6 +18,7 @@ export const ResetPassword = () => {
         body: JSON.stringify({ password }),
       })
       const info: RespFromBe = await res.json()
+      console.log(info)
       toast.info(info.msg)
     } catch (err) {
       console.log(err)
