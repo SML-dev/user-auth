@@ -9,4 +9,5 @@ export interface UserEntity {
   password: string;
   resetPassword?: string;
   resetPasswordExpires?: string;
+  update?: () => void;
 }

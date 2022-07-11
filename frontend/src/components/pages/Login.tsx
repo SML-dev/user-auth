@@ -1,16 +1,16 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
-import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe'
-import { authAction } from '../../store'
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe';
+import { authAction } from '../../store';
 
 export const Login = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const dispatch = useDispatch()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const sendRequest = async () => {
     try {
@@ -21,30 +21,30 @@ export const Login = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-      })
-      const info: RespFromBe = await res.json()
+      });
+      const info: RespFromBe = await res.json();
       if (info.token) {
-        dispatch(authAction.login())
-        navigate('/user')
+        dispatch(authAction.login());
+        navigate('/user');
       }
-      return toast.info(info.msg)
+      return toast.info(info.msg);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    await sendRequest()
-  }
+    await sendRequest();
+  };
 
   const handleChangeEmail = (e: ChangeEvent) => {
-    setEmail((e.target as HTMLInputElement).value)
-  }
+    setEmail((e.target as HTMLInputElement).value);
+  };
 
   const handleChangePassword = (e: ChangeEvent) => {
-    setPassword((e.target as HTMLInputElement).value)
-  }
+    setPassword((e.target as HTMLInputElement).value);
+  };
 
   return (
     <div className='container'>
@@ -84,5 +84,5 @@ export const Login = () => {
         </span>
       </form>
     </div>
-  )
-}
+  );
+};

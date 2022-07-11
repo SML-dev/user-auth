@@ -1,12 +1,12 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { toast, ToastContainer } from 'react-toastify'
-import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe'
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe';
 
 export const ForgotPassword = () => {
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       const res = await fetch('http://localhost:5000/api/forgot-password', {
         credentials: 'include',
@@ -15,17 +15,17 @@ export const ForgotPassword = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
-      })
-      const info: RespFromBe = await res.json()
-      toast.success(info.msg)
+      });
+      const info: RespFromBe = await res.json();
+      toast.success(info.msg);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const handleChangeEmail = (e: ChangeEvent) => {
-    setEmail((e.target as HTMLInputElement).value)
-  }
+    setEmail((e.target as HTMLInputElement).value);
+  };
   return (
     <div className='container'>
       <ToastContainer />
@@ -46,5 +46,5 @@ export const ForgotPassword = () => {
         <button type='submit'>Submit</button>
       </form>
     </div>
-  )
-}
+  );
+};

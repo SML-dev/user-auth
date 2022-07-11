@@ -1,12 +1,12 @@
-import React from 'react'
-import { AppBar, Box, Tab, Tabs, Toolbar, Typography } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
-import { authAction, LoginState } from '../store'
+import { AppBar, Box, Tab, Tabs, Toolbar, Typography } from '@mui/material';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { authAction, LoginState } from '../store';
 
 export const Header = () => {
-  const isLoggedIn = useSelector((state: LoginState) => state.isLoggedIn)
+  const isLoggedIn = useSelector((state: LoginState) => state.isLoggedIn);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const logoutReq = async () => {
     const res = await fetch('localhost:5000/api/logout', {
       credentials: 'include',
@@ -15,14 +15,14 @@ export const Header = () => {
         'Content-Type': 'application/json',
       },
       body: '',
-    })
+    });
     if (res.status === 200) {
-      return res
+      return res;
     }
-    return new Error('Please try again')
-  }
+    return new Error('Please try again');
+  };
 
-  const handleLogout = () => logoutReq().then(() => dispatch(authAction.logout()))
+  const handleLogout = () => logoutReq().then(() => dispatch(authAction.logout()));
 
   return (
     <div>
@@ -48,5 +48,5 @@ export const Header = () => {
         </Toolbar>
       </AppBar>
     </div>
-  )
-}
+  );
+};

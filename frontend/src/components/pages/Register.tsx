@@ -1,16 +1,16 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.min.css'
-import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe'
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
+import { RespFromBe } from '../../../../backend/types/respFromBe/respFromBe';
 
 export const Register = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       const res = await fetch(`http://localhost:5000/api/register`, {
         credentials: 'include',
@@ -19,23 +19,23 @@ export const Register = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password, name }),
-      })
-      const info: RespFromBe = await res.json()
-      toast(info.msg)
+      });
+      const info: RespFromBe = await res.json();
+      toast(info.msg);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const handleChangeName = (e: ChangeEvent) => {
-    setName((e.target as HTMLInputElement).value)
-  }
+    setName((e.target as HTMLInputElement).value);
+  };
   const handleChangeEmail = (e: ChangeEvent) => {
-    setEmail((e.target as HTMLInputElement).value)
-  }
+    setEmail((e.target as HTMLInputElement).value);
+  };
   const handleChangePassword = (e: ChangeEvent) => {
-    setPassword((e.target as HTMLInputElement).value)
-  }
+    setPassword((e.target as HTMLInputElement).value);
+  };
   return (
     <div className='container'>
       <ToastContainer />
@@ -83,5 +83,5 @@ export const Register = () => {
         </span>
       </form>
     </div>
-  )
-}
+  );
+};
