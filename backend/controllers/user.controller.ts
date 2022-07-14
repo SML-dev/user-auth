@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import { Request, Response } from 'express';
 import moment from 'moment';
-import { UserRecord } from '../records/user.records';
+import { UsersRecord } from '../records/users.record';
 import { authToken } from '../utils/authToken';
 import { NotFoundError, ValidationError } from '../utils/error';
 import { bcryptPassword, checkPassword } from '../utils/hashGen';
@@ -14,7 +14,7 @@ export interface RequestWithUserId extends Request {
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
-  const userExists = await UserRecord.getOne(email);
+  const userExists = await UsersRecord.getOne(email);
 
   if (userExists) {
     res.status(409).json({ msg: 'user already exists' });
@@ -25,7 +25,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   }
 
   try {
-    const user = new UserRecord({ ...req.body, password: await bcryptPassword(password) });
+    const user = new UsersRecord({ ...req.body, password: await bcryptPassword(password) });
     await user.insert();
     res.status(201).json({ msg: 'Registration successful' });
   } catch (err) {
@@ -36,16 +36,19 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
   try {
-    const user = await UserRecord.getOne(email);
+    const user = await UsersRecord.getOne(email);
     if (!user) {
       throw new NotFoundError('Page not found');
     }
     const token = authToken(user.id);
+    if (req.cookies.access_token) {
+      req.cookies.access_token = '';
+    }
     if (user && (await checkPassword(password, user.password))) {
       res
         .cookie('access_token', token, {
           httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000,
+          maxAge: Number(moment().add(30, 'seconds')),
         })
         .json({ token, msg: `Hello ${user.name}` });
     } else {
@@ -57,14 +60,14 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const getPrivateData = async (req: RequestWithUserId, res: Response): Promise<void> => {
-  const user = await UserRecord.getOneById(req.userId);
+  const user = await UsersRecord.getOneById(req.userId);
   res.json({ ...user });
 };
 
 export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
   const { email } = req.body;
 
-  const user = await UserRecord.getOne(email);
+  const user = await UsersRecord.getOne(email);
 
   if (!user) {
     throw new NotFoundError('Sorry We couldnt find Your email');
@@ -90,10 +93,9 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
   res.json({ msg: 'Sending email reset password', resetToken });
 };
 export const resetPassword = async (req: Request, res: Response): Promise<void> => {
-  const resetPassword = crypto.createHash('sha512').update(req.params.token)
-.digest('hex');
+  const resetPassword = crypto.createHash('sha512').update(req.params.token).digest('hex');
   try {
-    const user = await UserRecord.getOneByResetPassword(resetPassword, moment().format());
+    const user = await UsersRecord.getOneByResetPassword(resetPassword, moment().format());
     if (!user) {
       throw new NotFoundError('Invalid token');
     }

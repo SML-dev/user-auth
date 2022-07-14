@@ -6,7 +6,7 @@ import { ValidationError } from '../utils/error';
 
 type UserRecordResults = [UserEntity[], FieldPacket[]];
 
-export class UserRecord implements UserEntity {
+export class UsersRecord implements UserEntity {
   id?: string;
   name: string;
   email: string;
@@ -35,24 +35,24 @@ export class UserRecord implements UserEntity {
     this.resetPasswordExpires = obj.resetPasswordExpires ?? null;
   }
 
-  static async getOne(email: string): Promise<UserRecord> {
+  static async getOne(email: string): Promise<UsersRecord | null> {
     const [results] = (await pool.execute('SELECT * FROM users WHERE `email`= :email', {
       email,
     })) as UserRecordResults;
-    return results.length === 0 ? null : new UserRecord(results[0]);
+    return results.length === 0 ? null : new UsersRecord(results[0]);
   }
 
-  static async getOneById(id: string): Promise<UserRecord> {
+  static async getOneById(id: string): Promise<UsersRecord | null> {
     const [results] = (await pool.execute('SELECT * FROM users WHERE `id`= :id', {
       id,
     })) as UserRecordResults;
-    return results.length === 0 ? null : new UserRecord(results[0]);
+    return results.length === 0 ? null : new UsersRecord(results[0]);
   }
 
   static async getOneByResetPassword(
     resetPassword: string,
     resetPasswordExpires: string,
-  ): Promise<UserRecord> {
+  ): Promise<UsersRecord | null> {
     const [results] = (await pool.execute(
       'SELECT * FROM users WHERE `resetPassword`= :resetPassword AND `resetPasswordExpires` > :resetPasswordExpires',
       {
@@ -60,7 +60,7 @@ export class UserRecord implements UserEntity {
         resetPasswordExpires,
       },
     )) as UserRecordResults;
-    return results.length === 0 ? null : new UserRecord(results[0]);
+    return results.length === 0 ? null : new UsersRecord(results[0]);
   }
 
   async insert(): Promise<string> {

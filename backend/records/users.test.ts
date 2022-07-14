@@ -1,4 +1,4 @@
-import {UserRecord} from './user.records';
+import { UsersRecord } from './users.record';
 
 /** tested object from DB
  id: '47bc410e-a1a2-4145-a3d9-83cc8325aeed',
@@ -10,8 +10,8 @@ import {UserRecord} from './user.records';
 
  */
 
-test('UserRecord returns data from database for one entry', async () => {
-  const user = await UserRecord.getOne('test@test.pl');
+test('UsersRecord returns data from database for one entry', async () => {
+  const user = await UsersRecord.getOne('test@test.pl');
   expect(user).toBeDefined();
   expect(user.name).toBe('test');
   expect(user.email).toBe('test@test.pl');
@@ -21,6 +21,6 @@ test('UserRecord returns data from database for one entry', async () => {
 });
 
 test('AdRecord returns null from database for unexisting entry', async () => {
-  const user = await UserRecord.getOne('testowy@test.pl');
+  const user = await UsersRecord.getOne('testowy@test.pl');
   expect(user).toBeNull();
 });

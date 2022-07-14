@@ -4,7 +4,7 @@ import cors from 'cors';
 import express, { json } from 'express';
 import 'express-async-errors';
 import rateLimit from 'express-rate-limit';
-import { userRouter } from './routes/user.routes';
+import { usersRoute } from './routes/users.routes';
 import { handleError } from './utils/error';
 import './utils/db';
 
@@ -25,6 +25,6 @@ app.use(
     credentials: true,
   }),
 );
-app.use('/api', userRouter);
+app.use('/api', usersRoute);
 app.use(handleError);
 app.listen(PORT, 'localhost', () => console.log('server starting on http://localhost:5000'));

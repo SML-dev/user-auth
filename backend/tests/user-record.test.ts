@@ -1,4 +1,4 @@
-import { UserRecord } from '../records/user.records';
+import { UsersRecord } from '../records/users.record';
 
 const generateStringLength = (count: number): string => {
   let char = '';
@@ -17,8 +17,8 @@ const defaultObject = {
   resetPasswordExpires: '2022-07-11T20:42:23+02:00',
 };
 
-test('Can build UserRecord', () => {
-  const user = new UserRecord(defaultObject);
+test('Can build UsersRecord', () => {
+  const user = new UsersRecord(defaultObject);
 
   expect(user.name).toBe('Maniek');
   expect(user.email).toBe('maniek@gmail.com');
@@ -31,7 +31,7 @@ test('Can build UserRecord', () => {
 
 test('validate invalid name', () => {
   expect(() => {
-    new UserRecord({
+    new UsersRecord({
       ...defaultObject,
       name: 'kas',
     });
@@ -40,7 +40,7 @@ test('validate invalid name', () => {
 
 test('validate invalid name', () => {
   expect(() => {
-    new UserRecord({
+    new UsersRecord({
       ...defaultObject,
       name: generateStringLength(21),
     });
@@ -49,7 +49,7 @@ test('validate invalid name', () => {
 
 test('validate invalid email', () => {
   expect(() => {
-    new UserRecord({
+    new UsersRecord({
       ...defaultObject,
       email: 'tysiek.wp.pl',
     });
@@ -58,7 +58,7 @@ test('validate invalid email', () => {
 
 test('validate invalid email', () => {
   expect(() => {
-    new UserRecord({
+    new UsersRecord({
       ...defaultObject,
       email: 'a@.pl',
     });
@@ -67,7 +67,7 @@ test('validate invalid email', () => {
 
 test('validate invalid email', () => {
   expect(() => {
-    new UserRecord({
+    new UsersRecord({
       ...defaultObject,
       email: generateStringLength(31),
     });
